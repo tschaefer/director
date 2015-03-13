@@ -19,7 +19,7 @@
   <div class="row">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
       <div class="thumbnail thumbnail-relative">
-        <img src="{{ episode.thumb }}" class="img-responsive">
+        <img src="{{ episode.thumb }}" class="img-responsive" alt="{{ episode.title }}">
         <div class="caption caption-overlay">
           <h4>{{ episode.title }}
             <br/>
@@ -44,18 +44,16 @@
       </div>
     </div>
     <div class="col-lg-offset-1 col-lg-7 col-md-offset-1 col-md-6 col-sm-offset-1 col-sm-5 col-xs-12">
-      <div class="row">
-        <div class="panel panel-default">
+      <div class="panel panel-default">
         <div class="panel-body">
-        <div class="player">
-          <video poster="{{ episode.poster }}" controls crossorigin>
-            <source src="{{ episode.video }}" type="video/mp4">
-            <div>
+          <div class="player">
+            <video poster="{{ episode.poster }}" controls crossorigin>
+              <source src="{{ episode.video }}" type="video/mp4">
+              <div>
                 <a href="{{ episode.video }}">Download</a>
-            </div>
-          </video>
-        </div>
-        </div>
+              </div>
+            </video>
+          </div>
         </div>
       </div>
     </div>
