@@ -4,17 +4,16 @@ import os
 import werkzeug
 import flask
 from flask import Flask, Blueprint
+from flask.ext.sqlalchemy import SQLAlchemy
 from models import Show, Episode, Actor
-from db import Database
-
-db = Database()
-db.bind()
-db.init_session()
 
 media = Blueprint('media', __name__, static_url_path='/media',
                   static_folder='/mnt/storage/media/video/series')
+
 app = Flask(__name__)
 app.register_blueprint(media)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/director.db'
+db = SQLAlchemy(app)
 
 
 def request_json():
@@ -210,4 +209,4 @@ class Service(object):
         self.port = port
 
     def run(self):
-        app.run(host=self.host, port=self.port, debug=True, threaded=False)
+        app.run(host=self.host, port=self.port, debug=True, threaded=True)
