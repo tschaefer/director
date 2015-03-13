@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block navbar_form %}
+  <form class="navbar-form navbar-right hidden-xs" method="post" role="search">
+    <div class="form-group">
+      <input type="text" name="query" class="form-control input-sm" disabled>
+    </div>
+    <button type="submit" class="btn btn-default btn-sm" disabled>
+      Search
+    </button>
+  </form>
+{% endblock %}
+
+{% block style %}
+  <link rel="stylesheet" href="//cdn.plyr.io/1.0.25/plyr.css">
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+      <div class="thumbnail thumbnail-relative">
+        <img src="{{ episode.thumb }}" class="img-responsive">
+        <div class="caption caption-overlay">
+          <h4>{{ episode.title }}
+            <br/>
+            <small class="text-muted">
+              {{ episode.show }}
+              <span class="pull-right">
+                <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
+                  <i class="fa fa-download"></i>
+                </a>
+              </span>
+            </small>
+          </h4>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          {{ episode.plot }}
+        </div>
+        <div class="panel-footer">
+          <small>Season {{ episode.season }} / Episode {{ episode.episode }} / Aired {{ episode.aired }}</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-offset-1 col-lg-7 col-md-offset-1 col-md-6 col-sm-offset-1 col-sm-5 col-xs-12">
+      <div class="row">
+        <div class="panel panel-default">
+        <div class="panel-body">
+        <div class="player">
+          <video poster="{{ episode.poster }}" controls crossorigin>
+            <source src="{{ episode.video }}" type="video/mp4">
+            <div>
+                <a href="{{ episode.video }}">Download</a>
+            </div>
+          </video>
+        </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block script %}
+  <script src="//cdn.plyr.io/1.0.25/plyr.js"></script>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block navbar_form %}
+  <form class="navbar-form navbar-right hidden-xs" method="post" role="search">
+    <div class="form-group">
+      <input type="text" name="query" class="form-control input-sm" disabled>
+    </div>
+    <button type="submit" class="btn btn-default btn-sm" disabled>
+      Search
+    </button>
+  </form>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
+      <div class="thumbnail thumbnail-relative">
+        <img src="{{ show.thumb }}" class="img-responsive">
+        <div class="caption caption-overlay">
+          <h4>{{ show.title }}</h4>
+          <span class="text-muted">{{ show.studio }}</span>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          {{ show.plot }}
+        </div>
+        <div class="panel-footer">
+          <small>Premiered {{ show.premiered }}</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-8 col-md-6 col-sm-4 col-xs-12">
+      <div class="row">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th><i class="fa fa-download"></i></th>
+              <th>Title</th>
+              <th>Plot</th>
+              <th class="hidden-xs hidden-sm">Aired</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for episode in show.episodes %}
+            <tr>
+              <td>{{ episode.season }}/{{ episode.episode }}</td>
+              <td>
+                <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
+                  <i class="fa fa-download"></i>
+                </a>
+              </td>
+              <td>
+                <a href="{{ url_for('get_episode', episode_id=episode.pk) }}">
+                  {{ episode.title }}
+                </a>
+              </td>
+              <td>{{ episode.plot|truncate(64) }}</td>
+              <td class="hidden-xs hidden-sm">{{ episode.aired }}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

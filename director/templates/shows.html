@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block navbar_form %}
+  <form class="navbar-form navbar-right hidden-xs" method="post" role="search">
+    <div class="form-group">
+      <input type="text" name="query" class="form-control input-sm">
+    </div>
+    <button type="submit" class="btn btn-default btn-sm">
+      Search
+    </button>
+  </form>
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+  {% for show in shows %}
+    <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
+      <div class="thumbnail thumbnail-relative">
+        <a href="{{ url_for('get_show', show_id=show.pk) }}">
+          <img src="{{ show.thumb }}" class="img-responsive">
+        </a>
+        <div class="caption caption-overlay">
+          <strong>{{ show.title }}</strong></br>
+          <span class="text-muted">{{ show.studio }}</span>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+  </div>
+{% endblock %}
