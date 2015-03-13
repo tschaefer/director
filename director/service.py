@@ -107,7 +107,8 @@ def get_episode(episode_id):
     episode.update(show=_show.title)
     poster = _show.thumb
     if poster is None:
-        poster = '/mnt/storage/media/video/series/no-fanart.png'
+        poster = os.path.join(os.path.sep, 'static', 'images',
+                              'no-fanart.png')
     poster = media_url(poster)
     episode.update(poster=poster)
     episode.update(poster=poster)
@@ -137,7 +138,8 @@ def get_show(show_id):
     show.pop('_sa_instance_state')
     thumb = show['thumb']
     if thumb is None:
-        thumb = '/mnt/storage/media/video/series/no-fanart.png'
+        thumb = os.path.join(os.path.sep, 'static', 'images',
+                              'no-fanart.png')
     thumb = media_url(thumb)
     show.update(thumb=thumb)
     show.pop('base')
@@ -188,7 +190,8 @@ def get_shows():
         show.pop('_sa_instance_state')
         thumb = show['thumb']
         if thumb is None:
-            thumb = '/mnt/storage/media/video/series/no-fanart.png'
+            thumb = os.path.join(os.path.sep, 'static', 'images',
+                                 'no-fanart.png')
         thumb = media_url(thumb)
         show.update(thumb=thumb)
         show.pop('base')
