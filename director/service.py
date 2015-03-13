@@ -50,9 +50,11 @@ def get_episodes():
     if flask.request.method == 'POST':
         query = unicode(flask.request.form['query'])
         _episodes = db.session.query(Episode). \
-                    filter(Episode.title.like("%%%s%%" % (query))).all()
+                    filter(Episode.title.like("%%%s%%" % (query)))
     else:
-        _episodes = db.session.query(Episode).all()
+        _episodes = db.session.query(Episode)
+    _episodes = _episodes.order_by(Episode.show_pk).order_by(Episode.season) \
+                .order_by(Episode.episode).all()
 
     episodes = list()
     for _episode in _episodes:
@@ -76,6 +78,7 @@ def get_episode_file(episode_id):
     episode = db.session.query(Episode).get(episode_id)
     if not episode:
         flask.abort(404)
+
     path = episode.video
     filename = os.path.basename(path)
     response = flask.send_file(path, as_attachment=True,
@@ -116,14 +119,20 @@ def get_episode(episode_id):
     return flask.render_template('episode.html', episode=episode)
 
 
-@app.route('/show/<int:show_id>/')
+@app.route('/show/<int:show_id>/', methods=['GET', 'POST'])
 def get_show(show_id):
     _show = db.session.query(Show).get(show_id)
     if not _show:
         flask.abort(404)
 
     _actors = _show.actors
-    _episodes = _show.episodes
+
+    _episodes = db.session.query(Episode).filter_by(show_pk=_show.pk)
+    if flask.request.method == 'POST':
+        query = unicode(flask.request.form['query'])
+        _episodes = _episodes.filter(Episode.title.like('%%%s%%' % (query)))
+    _episodes = _episodes.order_by(Episode.season).order_by(Episode.episode) \
+                .all()
 
     show = _show.__dict__
     show.pop('_sa_instance_state')
