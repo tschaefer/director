@@ -14,7 +14,7 @@
 {% block content %}
   <div class="row">
     <div class="col-xs-12">
-      <table class="table">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>Show</th>
@@ -32,15 +32,19 @@
             <td>{{ episode.season }}/{{ episode.episode }}</td>
             <td>
               <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
-                <i class="fa fa-download"></i>
+                {{ episode.type }}
               </a>
             </td>
             <td>
               <a href="{{ url_for('get_episode', episode_id=episode.pk) }}">
-                {{ episode.title }}
+                {{ episode.title|truncate(32) }}
               </a>
             </td>
+          {% if episode.plot %}
             <td>{{ episode.plot|truncate(96) }}</td>
+          {% else %}
+            <td></td>
+          {% endif %}
             <td class="hidden-xs hidden-sm">{{ episode.aired }}</td>
           </tr>
         {% endfor %}

@@ -39,7 +39,9 @@
           <small>Season {{ episode.season }} / Episode {{ episode.episode }} / Aired {{ episode.aired }}</small>
         </div>
         <div class="panel-body">
+        {% if episode.plot %}
           {{ episode.plot }}
+        {% endif %}
         </div>
       </div>
     </div>
@@ -49,9 +51,6 @@
           <div class="player">
             <video poster="{{ episode.poster }}" controls crossorigin>
               <source src="{{ episode.video }}" type="video/mp4">
-              <div>
-                <a href="{{ episode.video }}">Download</a>
-              </div>
             </video>
           </div>
         </div>
