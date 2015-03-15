@@ -79,8 +79,8 @@ class Importer(object):
         for ext in ['.mp4', '.avi', '.mkv']:
             video = nfo.replace('.nfo', ext)
             if os.path.exists(video):
-                return video
-        return None
+                return (video, ext.lstrip('.'))
+        return (None, None)
 
     def _thumb(self, nfo):
         thumb = nfo.replace('.nfo', '.tbn')
@@ -102,7 +102,7 @@ class Importer(object):
             episode.thumb = thumb
         else:
             episode.thumb = root.find('thumb').text
-        episode.video = self._video(nfo)
+        episode.video, episode.type = self._video(nfo)
         self.db.session.add(episode)
         try:
             self.db.session.commit()
