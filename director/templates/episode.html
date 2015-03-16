@@ -21,22 +21,18 @@
       <div class="thumbnail thumbnail-relative">
         <img src="{{ episode.thumb }}" class="img-responsive" alt="{{ episode.title }}">
         <div class="caption caption-overlay">
-          <h4>{{ episode.title }}
-            <br/>
-            <small class="text-muted">
-              {{ episode.show }}
-              <span class="pull-right">
-                <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
-                  <i class="fa fa-download"></i>
-                </a>
-              </span>
-            </small>
-          </h4>
+          <strong>{{ episode.title }}</strong><br>
+          <small class="text-muted">{{ episode.show }}</small>
         </div>
       </div>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <small>Season {{ episode.season }} / Episode {{ episode.episode }} / Aired {{ episode.aired }}</small>
+          <small>
+            Season {{ episode.season }} / Episode {{ episode.episode }} / Aired {{ episode.aired }} /
+            <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
+              <i class="fa fa-download"></i>
+            </a>
+          </small>
         </div>
         <div class="panel-body">
         {% if episode.plot %}

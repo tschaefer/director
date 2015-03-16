@@ -21,8 +21,8 @@
             <th>#</th>
             <th><i class="fa fa-download"></i></th>
             <th>Title</th>
-            <th>Plot</th>
-            <th class="hidden-xs hidden-sm">Aired</th>
+            <th class="hidden-xs hidden-sm">Plot</th>
+            <th>Aired</th>
           </tr>
         </thead>
         <tbody>
@@ -41,11 +41,11 @@
               </a>
             </td>
           {% if episode.plot %}
-            <td>{{ episode.plot|truncate(96) }}</td>
+            <td class="hidden-xs hidden-sm">{{ episode.plot|truncate(96) }}</td>
           {% else %}
-            <td></td>
+            <td class="hidden-xs hidden-sm"></td>
           {% endif %}
-            <td class="hidden-xs hidden-sm">{{ episode.aired }}</td>
+            <td>{{ episode.aired }}</td>
           </tr>
         {% endfor %}
         </tbody>

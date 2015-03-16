@@ -17,7 +17,7 @@
       <div class="thumbnail thumbnail-relative">
         <img src="{{ show.thumb }}" class="img-responsive">
         <div class="caption caption-overlay">
-          <h4>{{ show.title }}</h4>
+          <strong>{{ show.title }}</strong><br>
           <span class="text-muted">{{ show.studio }}</span>
         </div>
       </div>
@@ -50,8 +50,8 @@
             <th>#</th>
             <th><i class="fa fa-download"></i></th>
             <th>Title</th>
-            <th>Plot</th>
-            <th class="hidden-xs hidden-sm">Aired</th>
+            <th class="hidden-xs hidden-sm">Plot</th>
+            <th>Aired</th>
           </tr>
         </thead>
         <tbody>
@@ -69,11 +69,11 @@
               </a>
             </td>
           {% if episode.plot %}
-            <td>{{ episode.plot|truncate(64) }}</td>
+            <td class="hidden-xs hidden-sm">{{ episode.plot|truncate(64) }}</td>
           {% else %}
-            <td></td>
+            <td class="hidden-xs hidden-sm"></td>
           {% endif %}
-            <td class="hidden-xs hidden-sm">{{ episode.aired }}</td>
+            <td>{{ episode.aired }}</td>
           </tr>
         {% endfor %}
         </tbody>
