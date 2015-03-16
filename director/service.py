@@ -7,12 +7,8 @@ from flask import Flask, Blueprint
 from flask.ext.sqlalchemy import SQLAlchemy
 from models import Show, Episode, Actor
 
-media = Blueprint('media', __name__, static_url_path='/media',
-                  static_folder='/mnt/storage/media/video/series')
 
 app = Flask(__name__)
-app.register_blueprint(media)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/director.db'
 db = SQLAlchemy(app)
 
 
@@ -25,7 +21,7 @@ def request_json():
 
 
 def media_url(path):
-    rel_path = os.path.relpath(path, '/mnt/storage/media/video/series')
+    rel_path = os.path.relpath(path, app.config['media'])
     return os.path.join(os.path.sep, 'media', rel_path)
 
 
@@ -207,9 +203,18 @@ def get_shows():
 
 class Service(object):
 
-    def __init__(self, host='localhost', port=8888):
+    def __init__(self, path=None, database=None, host=None, port=None):
+        self.path = path
+        self.database = database
         self.host = host
         self.port = port
 
     def run(self):
+        media = Blueprint('media', __name__, static_url_path='/media',
+                          static_folder=self.path)
+
+        app.register_blueprint(media)
+        app.config['SQLALCHEMY_DATABASE_URI'] = self.database
+        app.config['media'] = self.path
+
         app.run(host=self.host, port=self.port, debug=True, threaded=True)

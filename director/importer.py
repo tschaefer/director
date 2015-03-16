@@ -11,24 +11,19 @@ from db import Database
 
 class Importer(object):
 
-    def __init__(self, paths=[os.getcwdu()], verbose=False):
-        self.paths = paths
-        self.db = Database(echo=verbose)
-        self.db.create()
+    def __init__(self, path=None, database=None, verbose=False):
+        self.path = os.path.abspath(path)
+        self.db = Database(database=database, verbose=verbose)
         self.db.bind()
-        self.db.init_session()
 
     def __del__(self):
-        self.db.destroy_session()
-        self.db.close()
+        self.db.unbind()
 
     def shows(self):
         nfos = list()
-        for path in self.paths:
-            path = os.path.abspath(path)
-            for root, dirnames, filenames in os.walk(path):
-                for filename in fnmatch.filter(filenames, 'tvshow.nfo'):
-                    nfos.append(os.path.join(root, filename))
+        for root, dirnames, filenames in os.walk(self.path):
+            for filename in fnmatch.filter(filenames, 'tvshow.nfo'):
+                nfos.append(os.path.join(root, filename))
 
         for nfo in nfos:
             et = ElementTree.parse(nfo)
