@@ -1,0 +1,2 @@
+recursive-include director/templates *
+recursive-include director/static *
