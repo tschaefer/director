@@ -11,14 +11,14 @@ gathered from [XBMC](https://github.com/xbmc/xbmc) nfo and media files.
 
 Install package and scripts.
 
-  $ pip install https://github.com/tschaefer/director/archive/master.zip
+    $ pip install https://github.com/tschaefer/director/archive/master.zip
 
 ## Usage
 
 Import your TV shows and episodes.
 
-  $ director -d sqlite:////mnt/storage/media/video/series/director.db import -v /mnt/storage/media/video/series
+    $ director -d sqlite:////mnt/storage/media/video/series/director.db import -v /mnt/storage/media/video/series
 
 Start the web service.
 
-  $ director -d sqlite:////mnt/storage/media/video/series/director.db service -H 0.0.0.0 -p 8888 /mnt/storage/media/video/series
+    $ director -d sqlite:////mnt/storage/media/video/series/director.db service -H 0.0.0.0 -p 8888 /mnt/storage/media/video/series
