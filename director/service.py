@@ -5,7 +5,7 @@ import werkzeug
 import flask
 from flask import Flask, Blueprint
 from flask.ext.sqlalchemy import SQLAlchemy
-from models import Show, Episode, Actor
+from models import Show, Episode
 
 
 app = Flask(__name__)
@@ -23,6 +23,33 @@ def request_json():
 def media_url(path):
     rel_path = os.path.relpath(path, app.config['media'])
     return os.path.join(os.path.sep, 'media', rel_path)
+
+
+def obj_to_dict(obj, json=False):
+    pickle = obj.__dict__
+    pickle.pop('_sa_instance_state')
+
+    if isinstance(obj, Show):
+        thumb = pickle['thumb']
+        if thumb is None:
+            thumb = os.path.join(os.path.sep, 'static', 'images',
+                                 'no-fanart.png')
+        thumb = media_url(thumb)
+        pickle.update(thumb=thumb)
+        pickle.pop('base')
+        if json:
+            pickle['premiered'] = str(pickle['premiered'])
+    elif isinstance(obj, Episode):
+        if json:
+            pickle['aired'] = str(pickle['aired'])
+        thumb = pickle['thumb']
+        if not thumb.startswith('http://'):
+            thumb = media_url(thumb)
+            pickle.update(thumb=thumb)
+        video = media_url(pickle['video'])
+        pickle.update(video=video)
+
+    return pickle
 
 
 @app.errorhandler(405)
@@ -45,20 +72,16 @@ def get_episodes():
     if flask.request.method == 'POST':
         query = unicode(flask.request.form['query'])
         _episodes = db.session.query(Episode). \
-                    filter(Episode.title.like("%%%s%%" % (query)))
+            filter(Episode.title.like("%%%s%%" % (query)))
     else:
         _episodes = db.session.query(Episode)
     _episodes = _episodes.order_by(Episode.show_pk).order_by(Episode.season) \
-                .order_by(Episode.episode).all()
+        .order_by(Episode.episode).all()
 
     episodes = list()
     for _episode in _episodes:
         _show = _episode.show
-        episode = _episode.__dict__
-        episode.pop('_sa_instance_state')
-        if request_json():
-            episode['aired'] = str(episode['aired'])
-        episode['video'] = media_url(episode['video'])
+        episode = obj_to_dict(_episode, json=request_json())
         episode.update(show=_show.title)
         episodes.append(episode)
 
@@ -90,23 +113,13 @@ def get_episode(episode_id):
         flask.abort(404)
     _show = _episode.show
 
-    episode = _episode.__dict__
-    episode.pop('_sa_instance_state')
-    if request_json():
-        episode['aired'] = str(episode['aired'])
-    video = media_url(episode['video'])
-    episode.update(video=video)
-    thumb = episode['thumb']
-    if not thumb.startswith('http'):
-        thumb = media_url(thumb)
-        episode.update(thumb=thumb)
+    episode = obj_to_dict(_episode, json=request_json())
     episode.update(show=_show.title)
     poster = _show.thumb
     if poster is None:
         poster = os.path.join(os.path.sep, 'static', 'images',
                               'no-fanart.png')
     poster = media_url(poster)
-    episode.update(poster=poster)
     episode.update(poster=poster)
 
     if request_json():
@@ -128,39 +141,19 @@ def get_show(show_id):
         query = unicode(flask.request.form['query'])
         _episodes = _episodes.filter(Episode.title.like('%%%s%%' % (query)))
     _episodes = _episodes.order_by(Episode.season).order_by(Episode.episode) \
-                .all()
+        .all()
 
-    show = _show.__dict__
-    show.pop('_sa_instance_state')
-    thumb = show['thumb']
-    if thumb is None:
-        thumb = os.path.join(os.path.sep, 'static', 'images',
-                              'no-fanart.png')
-    thumb = media_url(thumb)
-    show.update(thumb=thumb)
-    show.pop('base')
-    if request_json():
-        show['premiered'] = str(show['premiered'])
+    show = obj_to_dict(_show, json=request_json())
 
     actors = list()
     for _actor in _actors:
-        actor = _actor.__dict__
-        actor.pop('_sa_instance_state')
+        actor = obj_to_dict(_actor, json=request_json())
         actors.append(actor)
     show.update(actors=actors)
 
     episodes = list()
     for _episode in _episodes:
-        episode = _episode.__dict__
-        episode.pop('_sa_instance_state')
-        if request_json():
-            episode['aired'] = str(episode['aired'])
-        thumb = episode['thumb']
-        if not thumb.startswith('http'):
-            thumb = media_url(thumb)
-            episode.update(thumb=thumb)
-        video = media_url(episode['video'])
-        episode.update(video=video)
+        episode = obj_to_dict(_episode, json=request_json())
         episodes.append(episode)
     show.update(episodes=episodes)
 
@@ -176,23 +169,13 @@ def get_shows():
     if flask.request.method == 'POST':
         query = unicode(flask.request.form['query'])
         _shows = db.session.query(Show). \
-                 filter(Show.title.like("%%%s%%" % (query))).all()
+            filter(Show.title.like("%%%s%%" % (query))).all()
     else:
         _shows = db.session.query(Show).all()
 
     shows = list()
     for _show in _shows:
-        show = _show.__dict__
-        show.pop('_sa_instance_state')
-        thumb = show['thumb']
-        if thumb is None:
-            thumb = os.path.join(os.path.sep, 'static', 'images',
-                                 'no-fanart.png')
-        thumb = media_url(thumb)
-        show.update(thumb=thumb)
-        show.pop('base')
-        if request_json():
-            show['premiered'] = str(show['premiered'])
+        show = obj_to_dict(_show, json=request_json())
         shows.append(show)
 
     if request_json():
