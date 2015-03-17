@@ -45,7 +45,7 @@
           {% else %}
             <td class="hidden-xs hidden-sm"></td>
           {% endif %}
-            <td>{{ episode.aired }}</td>
+            <td>{{ episode.aired|date('%x') }}</td>
           </tr>
         {% endfor %}
         </tbody>

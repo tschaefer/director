@@ -23,7 +23,7 @@
       </div>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <small>Premiered {{ show.premiered }}</small>
+          <small>Premiered {{ show.premiered|date('%x') }}</small>
         </div>
         <div class="panel-body">
           {{ show.plot }}
@@ -73,7 +73,7 @@
           {% else %}
             <td class="hidden-xs hidden-sm"></td>
           {% endif %}
-            <td>{{ episode.aired }}</td>
+            <td>{{ episode.aired|date('%x') }}</td>
           </tr>
         {% endfor %}
         </tbody>

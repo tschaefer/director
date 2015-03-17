@@ -52,6 +52,11 @@ def obj_to_dict(obj, json=False):
     return pickle
 
 
+@app.template_filter('date')
+def date_filter(date, dateformat='%Y-%m-%d'):
+    return date.strftime(dateformat)
+
+
 @app.errorhandler(405)
 @app.errorhandler(404)
 def page_not_found(e):

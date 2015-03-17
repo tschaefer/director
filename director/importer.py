@@ -90,7 +90,7 @@ class Importer(object):
         episode.season = root.find('season').text
         episode.episode = root.find('episode').text
         aired = root.find('aired').text
-        episode.aired = datetime.strptime(aired, '%Y-%m-%d')
+        episode.aired = datetime.strptime(aired, '%Y-%m-%d').date()
         episode.plot = root.find('plot').text
         thumb = self._thumb(nfo)
         if thumb is not None:
