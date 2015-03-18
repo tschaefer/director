@@ -43,9 +43,11 @@ def obj_to_dict(obj, json=False):
         if json:
             pickle['aired'] = str(pickle['aired'])
         thumb = pickle['thumb']
-        if not thumb.startswith('http://'):
+        if thumb is None:
+            thumb = ''
+        elif not thumb.startswith('http://'):
             thumb = media_url(thumb)
-            pickle.update(thumb=thumb)
+        pickle.update(thumb=thumb)
         video = media_url(pickle['video'])
         pickle.update(video=video)
 
@@ -54,6 +56,8 @@ def obj_to_dict(obj, json=False):
 
 @app.template_filter('date')
 def date_filter(date, dateformat='%Y-%m-%d'):
+    if date is None:
+        return ''
     return date.strftime(dateformat)
 
 

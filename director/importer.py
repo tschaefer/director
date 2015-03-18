@@ -26,7 +26,10 @@ class Importer(object):
                 nfos.append(os.path.join(root, filename))
 
         for nfo in nfos:
-            et = ElementTree.parse(nfo)
+            try:
+                et = ElementTree.parse(nfo)
+            except:
+                continue
             root = et.getroot()
             if root.tag != 'tvshow':
                 continue
@@ -37,7 +40,8 @@ class Importer(object):
             show.tvdb = int(root.find('id').text)
             show.genre = root.find('genre').text
             premiered = root.find('premiered').text
-            show.premiered = datetime.strptime(premiered, '%Y-%m-%d').date()
+            if premiered is not None:
+                show.premiered = datetime.strptime(premiered, '%Y-%m-%d').date()
             show.studio = root.find('studio').text
             show.base = os.path.dirname(nfo)
             thumb = os.path.join(show.base, 'fanart.jpg')
@@ -53,7 +57,10 @@ class Importer(object):
 
     def actors(self):
         for show in self.db.session.query(Show).all():
-            et = ElementTree.parse(os.path.join(show.base, 'tvshow.nfo'))
+            try:
+                et = ElementTree.parse(os.path.join(show.base, 'tvshow.nfo'))
+            except:
+                continue
             root = et.getroot()
             if root.tag != 'tvshow':
                 continue
@@ -90,7 +97,8 @@ class Importer(object):
         episode.season = root.find('season').text
         episode.episode = root.find('episode').text
         aired = root.find('aired').text
-        episode.aired = datetime.strptime(aired, '%Y-%m-%d').date()
+        if aired is not None:
+            episode.aired = datetime.strptime(aired, '%Y-%m-%d').date()
         episode.plot = root.find('plot').text
         thumb = self._thumb(nfo)
         if thumb is not None:
@@ -113,7 +121,10 @@ class Importer(object):
                         continue
                     episode_nfos.append(os.path.join(root, filename))
             for nfo in episode_nfos:
-                et = ElementTree.parse(nfo)
+                try:
+                    et = ElementTree.parse(nfo)
+                except:
+                    pass
                 root = et.getroot()
                 if root.tag == 'episodedetails':
                     self._episode(root, show, nfo)
