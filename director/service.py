@@ -32,9 +32,9 @@ def obj_to_dict(obj, json=False):
     if isinstance(obj, Show):
         thumb = pickle['thumb']
         if thumb is None:
-            thumb = os.path.join(os.path.sep, 'static', 'images',
-                                 'no-fanart.png')
-        thumb = media_url(thumb)
+            thumb = 'holder.js/1920x1080/gray/auto/text:%s' % (pickle['title'])
+        else:
+            thumb = media_url(thumb)
         pickle.update(thumb=thumb)
         pickle.pop('base')
         if json:
@@ -44,7 +44,7 @@ def obj_to_dict(obj, json=False):
             pickle['aired'] = str(pickle['aired'])
         thumb = pickle['thumb']
         if thumb is None:
-            thumb = ''
+            thumb = 'holder.js/400x225/gray/auto/text:%s' % (pickle['title'])
         elif not thumb.startswith('http://'):
             thumb = media_url(thumb)
         pickle.update(thumb=thumb)
@@ -126,9 +126,9 @@ def get_episode(episode_id):
     episode.update(show=_show.title)
     poster = _show.thumb
     if poster is None:
-        poster = os.path.join(os.path.sep, 'static', 'images',
-                              'no-fanart.png')
-    poster = media_url(poster)
+        poster = 'holder.js/1920x1080/gray/auto/text:%s' % (episode['title'])
+    else:
+        poster = media_url(poster)
     episode.update(poster=poster)
 
     if request_json():
