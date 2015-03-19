@@ -187,6 +187,7 @@ def get_shows():
         if len(_show.episodes) == 0:
             continue
         show = obj_to_dict(_show, json=request_json())
+        show.pop('episodes')
         shows.append(show)
 
     if request_json():
