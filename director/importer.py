@@ -74,8 +74,17 @@ class Importer(Utils):
 
     def shows(self):
         nfos = self.find_nfos(self.path, 'tvshow.nfo')
+        if len(nfos) == 0:
+            if self.verbose:
+                print "(%s) no shows found" % (self.path)
+            return
+
+        _nfos = self.db.session.query(Show.nfo).all()
+        _nfos = [nfo[0] for nfo in _nfos]
 
         for nfo in nfos:
+            if nfo in _nfos:
+                continue
             root = self.parse_nfo(nfo)
             if root.tag != 'tvshow':
                 if self.verbose:
@@ -100,12 +109,6 @@ class Importer(Utils):
                 show.fanart = fanart
             self.commit_entry(show)
 
-    def actors(self):
-        for show in self.db.session.query(Show).all():
-            root = self.parse_nfo(show.nfo)
-            if root is None:
-                continue
-
             for _actor in root.findall('actor'):
                 actor = Actor()
                 actor.show_pk = show.pk
@@ -117,8 +120,17 @@ class Importer(Utils):
     def episodes(self):
         for show in self.db.session.query(Show).all():
             nfos = self.find_nfos(show.base, '*.nfo')
+            for nfo in nfos:
+                if nfo.endswith('tvshow.nfo'):
+                    nfos.remove(nfo)
+
+            _nfos = self.db.session.query(Episode.nfo). \
+                    filter(Episode.show_pk=="%d" % (show.pk)).all()
+            _nfos = [nfo[0] for nfo in _nfos]
 
             for nfo in nfos:
+                if nfo in _nfos:
+                    continue
                 root =self.parse_nfo(nfo)
                 if root is None:
                     continue
@@ -161,5 +173,4 @@ class Importer(Utils):
 
     def run(self):
         self.shows()
-        self.actors()
         self.episodes()
