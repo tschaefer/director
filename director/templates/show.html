@@ -15,7 +15,7 @@
   <div class="row">
     <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
       <div class="thumbnail thumbnail-relative">
-        <img src="{{ show.fanart }}" class="img-responsive">
+        <img src="{{ show.fanart|urlencode }}" class="img-responsive" alt="{{ show.title }}">
         <div class="caption caption-overlay">
           <strong>{{ show.title }}</strong><br>
           <span class="text-muted">{{ show.studio }}</span>
@@ -26,10 +26,10 @@
           <small>Premiered {{ show.premiered|date('%x') }}</small>
         </div>
         <div class="panel-body">
-          {{ show.plot }}
+          {{ show.plot|default('', true) }}
         </div>
         <div class="panel-footer">
-          <small>{{ show.genre }}</small>
+          <small>{{ show.genre|default('', true) }}</small>
         </div>
       </div>
       <div class="panel panel-default">
@@ -40,7 +40,7 @@
           <dl class="dl-horizontal dl-starring">
           {% for actor in show.actors %}
             <dt>{{ actor.name }}</dt>
-            <dd>{{ actor.role }}</dd>
+            <dd>{{ actor.role|replace('|', ', ') }}</dd>
           {% endfor %}
           </dl>
         </div>

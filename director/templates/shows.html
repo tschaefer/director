@@ -17,11 +17,11 @@
     <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
       <div class="thumbnail thumbnail-relative">
         <a href="{{ url_for('get_show', show_id=show.pk) }}">
-          <img src="{{ show.fanart }}" class="img-responsive">
+          <img src="{{ show.fanart }}" class="img-responsive" alt="{{ show.title }}">
         </a>
         <div class="caption caption-overlay">
           <strong>{{ show.title }}</strong></br>
-          <span class="text-muted">{{ show.studio }}</span>
+          <span class="text-muted">{{ show.studio|default('', true) }}</span>
         </div>
       </div>
     </div>

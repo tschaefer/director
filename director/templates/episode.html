@@ -19,7 +19,7 @@
   <div class="row">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
       <div class="thumbnail thumbnail-relative">
-        <img src="{{ episode.thumb }}" class="img-responsive" alt="{{ episode.title }}">
+        <img src="{{ episode.thumb|urlencode }}" class="img-responsive" alt="{{ episode.title }}">
         <div class="caption caption-overlay">
           <strong>{{ episode.title }}</strong><br>
           <small class="text-muted">{{ episode.show }}</small>
@@ -28,7 +28,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <small>
-            Season {{ episode.season }} / Episode {{ episode.episode }} / Aired {{ episode.aired }} /
+            Season {{ episode.season }} / Episode {{ episode.episode }} / Aired {{ episode.aired|date('%x') }} /
             <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
               <i class="fa fa-download"></i>
             </a>
@@ -45,7 +45,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="player">
-            <video poster="{{ episode.poster }}" controls preload="metadata">
+            <video poster="{{ episode.poster|urlencode }}" controls preload="metadata">
               <source src="{{ episode.video }}" type="video/mp4">
             </video>
           </div>
