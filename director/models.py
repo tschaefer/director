@@ -19,8 +19,10 @@ class Show(Models):
     genre = Column(Unicode, nullable=True)
     premiered = Column(Date, nullable=True)
     studio = Column(Unicode, nullable=True)
+    nfo = Column(Unicode, nullable=False)
+    nfo_mtime = Column(Integer, nullable=False)
+    fanart = Column(Unicode, nullable=True)
     base = Column(Unicode, nullable=False)
-    thumb = Column(Unicode, nullable=True)
 
 
 class Episode(Models):
@@ -33,12 +35,15 @@ class Episode(Models):
     episode = Column(SmallInteger, nullable=False)
     aired = Column(Date, nullable=True)
     plot = Column(Unicode, nullable=True)
+    nfo = Column(Unicode, nullable=False)
+    nfo_mtime = Column(Integer, nullable=False)
     thumb = Column(Unicode, nullable=True)
+    poster = Column(Unicode, nullable=True)
     video = Column(Unicode, nullable=False)
-    type = Column(Unicode, nullable=False)
+    video_type = Column(Unicode, nullable=False)
+    base = Column(Unicode, nullable=False)
 
-    show = relationship(Show, backref=backref('episodes', uselist=True,
-                        cascade='delete,all'))
+    show = relationship(Show, backref=backref('episodes', uselist=True))
 
     __table_args__ = (UniqueConstraint('show_pk', 'season', 'episode'),)
 

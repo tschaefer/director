@@ -30,12 +30,12 @@ def obj_to_dict(obj, json=False):
     pickle.pop('_sa_instance_state')
 
     if isinstance(obj, Show):
-        thumb = pickle['thumb']
-        if thumb is None:
-            thumb = 'holder.js/1920x1080/gray/auto/text:%s' % (pickle['title'])
+        fanart = pickle['fanart']
+        if fanart is None:
+            fanart = 'holder.js/1920x1080/gray/auto/text:%s' % (pickle['title'])
         else:
-            thumb = media_url(thumb)
-        pickle.update(thumb=thumb)
+            fanart = media_url(fanart)
+        pickle.update(fanart=fanart)
         pickle.pop('base')
         if json:
             pickle['premiered'] = str(pickle['premiered'])
@@ -124,12 +124,13 @@ def get_episode(episode_id):
 
     episode = obj_to_dict(_episode, json=request_json())
     episode.update(show=_show.title)
-    poster = _show.thumb
+    poster = _show.fanart
     if poster is None:
         poster = 'holder.js/1920x1080/gray/auto/text:%s' % (episode['title'])
     else:
         poster = media_url(poster)
     episode.update(poster=poster)
+
 
     if request_json():
         return flask.jsonify(episode=episode)
