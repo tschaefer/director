@@ -10,6 +10,7 @@ from db import Database
 
 
 class Utils(object):
+
     def __init__(self, path=None, database=None, verbose=False):
         self.verbose = verbose
         self.path = os.path.abspath(path)
@@ -40,13 +41,13 @@ class Utils(object):
         return nfos
 
     def commit_entry(self, obj):
-       self.db.session.add(obj)
-       try:
-           self.db.session.commit()
-       except IntegrityError as e:
-           if self.verbose:
-               print "%s" % (e)
-           self.db.session.rollback()
+        self.db.session.add(obj)
+        try:
+            self.db.session.commit()
+        except IntegrityError as e:
+            if self.verbose:
+                print "%s" % (e)
+            self.db.session.rollback()
 
     def get_episode_video(self, nfo):
         for ext in ['.mp4', '.avi', '.mkv', '.m2ts', '.wmv']:
@@ -63,14 +64,35 @@ class Utils(object):
 
 class Importer(Utils):
 
-    def __init__(self, path=None, database=None, verbose=False):
-        self.verbose = verbose
-        self.path = os.path.abspath(path)
-        self.db = Database(database=database, verbose=verbose)
-        self.db.bind()
+    def actor(self, show_pk, root):
+        actor = Actor()
+        actor.show_pk = show_pk
+        actor.name = root[0].text
+        actor.role = root[1].text
+        actor.thumb = root[2].text
+        self.commit_entry(actor)
 
-    def __del__(self):
-        self.db.unbind()
+    def show(self, nfo, root):
+        show = Show()
+        show.nfo = nfo
+        show.nfo_mtime = int(os.stat(nfo).st_mtime)
+        show.title = root.find('title').text
+        show.plot = root.find('plot').text
+        show.tvdb = root.find('id').text
+        show.genre = root.find('genre').text
+        premiered = root.find('premiered').text
+        if premiered is not None:
+            show.premiered = datetime.strptime(premiered, '%Y-%m-%d') \
+                    .date()
+        show.studio = root.find('studio').text
+        show.base = os.path.dirname(nfo)
+        fanart = os.path.join(show.base, 'fanart.jpg')
+        if os.path.exists(fanart):
+            show.fanart = fanart
+        self.commit_entry(show)
+
+        for branch in root.findall('actor'):
+            self.actor(show.pk, branch)
 
     def shows(self):
         nfos = self.find_nfos(self.path, 'tvshow.nfo')
@@ -90,32 +112,34 @@ class Importer(Utils):
                 if self.verbose:
                     print "(%s) invalid root tag '%s'" % (nfo, root.tag)
                 continue
+            self.show(nfo, root)
 
-            show = Show()
-            show.nfo = nfo
-            show.nfo_mtime = int(os.stat(nfo).st_mtime)
-            show.title = root.find('title').text
-            show.plot = root.find('plot').text
-            show.tvdb = root.find('id').text
-            show.genre = root.find('genre').text
-            premiered = root.find('premiered').text
-            if premiered is not None:
-                show.premiered = datetime.strptime(premiered, '%Y-%m-%d') \
-                        .date()
-            show.studio = root.find('studio').text
-            show.base = os.path.dirname(nfo)
-            fanart = os.path.join(show.base, 'fanart.jpg')
-            if os.path.exists(fanart):
-                show.fanart = fanart
-            self.commit_entry(show)
-
-            for _actor in root.findall('actor'):
-                actor = Actor()
-                actor.show_pk = show.pk
-                actor.name = _actor[0].text
-                actor.role = _actor[1].text
-                actor.thumb = _actor[2].text
-                self.commit_entry(actor)
+    def episode(self, nfo, root, show):
+        episode = Episode()
+        episode.nfo = nfo
+        episode.nfo_mtime = int(os.stat(nfo).st_mtime)
+        episode.base = os.path.basename(nfo)
+        episode.show_pk = show.pk
+        episode.title = root.find('title').text
+        episode.season = root.find('season').text
+        episode.episode = root.find('episode').text
+        aired = root.find('aired').text
+        if aired is not None:
+            episode.aired = datetime. \
+                strptime(aired, '%Y-%m-%d').date()
+        episode.plot = root.find('plot').text
+        thumb = nfo.replace('.nfo', '.tbn')
+        if os.path.exists(thumb):
+            episode.thumb = thumb
+        else:
+            episode.thumb = root.find('thumb').text
+        poster = "season%02d.tbn" % (int(episode.season))
+        poster = os.path.join(show.base, poster)
+        if os.path.exists(poster):
+            episode.poster = poster
+        episode.video, episode.video_type = self. \
+            get_episode_video(nfo)
+        self.commit_entry(episode)
 
     def episodes(self):
         for show in self.db.session.query(Show).all():
@@ -125,13 +149,14 @@ class Importer(Utils):
                     nfos.remove(nfo)
 
             _nfos = self.db.session.query(Episode.nfo). \
-                    filter(Episode.show_pk=="%d" % (show.pk)).all()
+                filter(Episode.show_pk == "%d" % (show.pk)).all()
             _nfos = [nfo[0] for nfo in _nfos]
 
             for nfo in nfos:
                 if nfo in _nfos:
                     continue
-                root =self.parse_nfo(nfo)
+
+                root = self.parse_nfo(nfo)
                 if root is None:
                     continue
 
@@ -147,29 +172,7 @@ class Importer(Utils):
                     continue
 
                 for root in branches:
-                    episode = Episode()
-                    episode.nfo = nfo
-                    episode.nfo_mtime = int(os.stat(nfo).st_mtime)
-                    episode.base = os.path.basename(nfo)
-                    episode.show_pk = show.pk
-                    episode.title = root.find('title').text
-                    episode.season = root.find('season').text
-                    episode.episode = root.find('episode').text
-                    aired = root.find('aired').text
-                    if aired is not None:
-                        episode.aired = datetime.strptime(aired, '%Y-%m-%d').date()
-                    episode.plot = root.find('plot').text
-                    thumb = nfo.replace('.nfo', '.tbn')
-                    if os.path.exists(thumb):
-                        episode.thumb = thumb
-                    else:
-                        episode.thumb = root.find('thumb').text
-                    poster = "season%02d.tbn" % (int(episode.season))
-                    poster = os.path.join(show.base, poster)
-                    if os.path.exists(poster):
-                        episode.poster = poster
-                    episode.video, episode.video_type = self.get_episode_video(nfo)
-                    self.commit_entry(episode)
+                    self.episode(nfo, root, show)
 
     def run(self):
         self.shows()
