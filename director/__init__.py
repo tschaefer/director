@@ -4,6 +4,7 @@ import sys
 import os
 import argparse
 from importer import Importer
+from updater import Updater
 from service import Service
 
 
@@ -30,7 +31,16 @@ def parse_options():
                                help='media path')
     parser_import.add_argument('-v', '--verbose',
                                action='store_true',
-                               help='verbose putput')
+                               help='verbose output')
+
+    parser_update = subparsers.add_parser('update')
+    parser_update.set_defaults(updater=True)
+    parser_update.add_argument('path',
+                               type=stype,
+                               help='media path')
+    parser_update.add_argument('-v', '--verbose',
+                               action='store_true',
+                               help='verbose output')
 
     parser_service = subparsers.add_parser('service')
     parser_service.set_defaults(service=True)
@@ -54,6 +64,10 @@ def run(args):
         importer = Importer(path=args.path, database=args.database,
                             verbose=args.verbose)
         importer.run()
+    elif hasattr(args, 'updater'):
+        updater = Updater(path=args.path, database=args.database,
+                          verbose=args.verbose)
+        updater.run()
     elif hasattr(args, 'service'):
         service = Service(host=args.host, port=args.port,
                           database=args.database, path=args.path)
