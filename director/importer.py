@@ -118,7 +118,7 @@ class Importer(Utils):
         episode = Episode()
         episode.nfo = nfo
         episode.nfo_mtime = int(os.stat(nfo).st_mtime)
-        episode.base = os.path.basename(nfo)
+        episode.base = os.path.dirname(nfo)
         episode.show_pk = show.pk
         episode.title = root.find('title').text
         episode.season = root.find('season').text
