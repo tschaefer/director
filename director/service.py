@@ -28,15 +28,18 @@ def media_url(path):
 def obj_to_dict(obj, json=False):
     pickle = obj.__dict__
     pickle.pop('_sa_instance_state')
+    'base' in pickle and pickle.pop('base')
+    'nfo' in pickle and pickle.pop('nfo')
+    'nfo' in pickle and pickle.pop('nfo_mtime')
 
     if isinstance(obj, Show):
         fanart = pickle['fanart']
         if fanart is None:
-            fanart = 'holder.js/1920x1080/gray/auto/text:%s' % (pickle['title'])
+            fanart = 'holder.js/1920x1080/gray/auto/text:%s' \
+                % (pickle['title'])
         else:
             fanart = media_url(fanart)
         pickle.update(fanart=fanart)
-        pickle.pop('base')
         if json:
             pickle['premiered'] = str(pickle['premiered'])
     elif isinstance(obj, Episode):
@@ -130,7 +133,6 @@ def get_episode(episode_id):
     else:
         poster = media_url(poster)
     episode.update(poster=poster)
-
 
     if request_json():
         return flask.jsonify(episode=episode)
