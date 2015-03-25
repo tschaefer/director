@@ -31,7 +31,8 @@ class Utils(object):
             if self.verbose:
                 print "%s" % (e)
             return None
-        return et.getroot()
+        else:
+            return et.getroot()
 
     def find_nfos(self, path, pattern):
         nfos = list()
@@ -48,6 +49,9 @@ class Utils(object):
             if self.verbose:
                 print "%s" % (e)
             self.db.session.rollback()
+            return False
+        else:
+            return True
 
     def get_episode_video(self, nfo):
         for ext in ['.mp4', '.avi', '.mkv', '.m2ts', '.wmv']:
@@ -89,10 +93,9 @@ class Importer(Utils):
         fanart = os.path.join(show.base, 'fanart.jpg')
         if os.path.exists(fanart):
             show.fanart = fanart
-        self.commit_entry(show)
-
-        for branch in root.findall('actor'):
-            self.actor(show.pk, branch)
+        if self.commit_entry(show):
+            for branch in root.findall('actor'):
+                self.actor(show.pk, branch)
 
     def shows(self):
         nfos = self.find_nfos(self.path, 'tvshow.nfo')
@@ -108,11 +111,14 @@ class Importer(Utils):
             if nfo in _nfos:
                 continue
             root = self.parse_nfo(nfo)
-            if root.tag != 'tvshow':
+            if root is None:
+                continue
+            elif root.tag != 'tvshow':
                 if self.verbose:
                     print "(%s) invalid root tag '%s'" % (nfo, root.tag)
                 continue
-            self.show(nfo, root)
+            else:
+                self.show(nfo, root)
 
     def episode(self, nfo, root, show):
         episode = Episode()
@@ -157,11 +163,10 @@ class Importer(Utils):
                     continue
 
                 root = self.parse_nfo(nfo)
+                branches = list()
                 if root is None:
                     continue
-
-                branches = list()
-                if root.tag == 'episodedetails':
+                elif root.tag == 'episodedetails':
                     branches.append(root)
                 elif root.tag == 'xbmcmultiepisode':
                     for _root in root.findall('episodedetails'):

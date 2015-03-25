@@ -51,18 +51,9 @@ class Utils(object):
             if self.verbose:
                 print "%s" % (e)
             self.db.session.rollback()
-
-    def get_episode_video(self, nfo):
-        for ext in ['.mp4', '.avi', '.mkv', '.m2ts', '.wmv']:
-            video = nfo.replace('.nfo', ext)
-            if os.path.exists(video):
-                return (video, ext.lstrip('.'))
-            video = nfo.replace('.nfo', ext.upper())
-            if os.path.exists(video):
-                return (video, ext.lstrip('.'))
-        if self.verbose:
-            print "No video found for '%s'" % (nfo)
-        return (None, None)
+            return False
+        else:
+            return True
 
 
 class Updater(Utils):
@@ -88,14 +79,12 @@ class Updater(Utils):
         fanart = os.path.join(old.base, 'fanart.jpg')
         if os.path.exists(fanart):
             show.update(fanart=fanart)
-        self.commit_entry(show, old, Show)
-
-        for actor in old.actors:
-            self.db.session.query(Actor).filter(Actor.show_pk == old.pk). \
-                delete()
-
-        for branch in root.findall('actor'):
-            self.actor(old.pk, branch)
+        if self.commit_entry(show, old, Show):
+            for actor in old.actors:
+                self.db.session.query(Actor).filter(Actor.show_pk == old.pk). \
+                    delete()
+            for branch in root.findall('actor'):
+                self.actor(old.pk, branch)
 
     def shows(self):
         shows = self.db.session.query(Show).all()
@@ -104,7 +93,9 @@ class Updater(Utils):
             mtime = int(os.stat(show.nfo).st_mtime)
             if mtime != int(show.nfo_mtime) or not show.fanart:
                 root = self.parse_nfo(show.nfo)
-                if root.tag != 'tvshow':
+                if root is None:
+                    continue
+                elif root.tag != 'tvshow':
                     if self.verbose:
                         print "(%s) invalid root tag '%s'" % (show.nfo,
                                                               root.tag)
@@ -143,6 +134,8 @@ class Updater(Utils):
                         or not episode.poster:
                     root = self.parse_nfo(episode.nfo)
                     branches = list()
+                    if root is None:
+                        continue
                     if root.tag == 'episodedetails':
                         branches.append(root)
                     elif root.tag == 'xbmcmultiepisode':
