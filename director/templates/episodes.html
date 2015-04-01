@@ -41,11 +41,11 @@
               </a>
             </td>
           {% if episode.plot %}
-            <td class="hidden-xs hidden-sm">{{ episode.plot|truncate(96) }}</td>
+            <td class="hidden-xs hidden-sm">{{ episode.plot|truncate(89) }}</td>
           {% else %}
             <td class="hidden-xs hidden-sm"></td>
           {% endif %}
-            <td>{{ episode.aired|date('%x') }}</td>
+            <td>{{ episode.aired|date }}</td>
           </tr>
         {% endfor %}
         </tbody>

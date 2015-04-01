@@ -28,7 +28,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">
           <small>
-            Season {{ episode.season }} / Episode {{ episode.episode }} / Aired {{ episode.aired|date('%x') }} /
+            Season {{ episode.season }} / Episode {{ episode.episode }} / Aired {{ episode.aired|date }} /
             <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
               <i class="fa fa-download"></i>
             </a>

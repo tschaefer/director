@@ -65,7 +65,7 @@ def obj_to_dict(obj, json=False):
 def date_filter(date, dateformat='%Y-%m-%d'):
     if date is None:
         return ''
-    return date.isoformat()
+    return date.strftime(dateformat)
 
 
 @app.errorhandler(405)
