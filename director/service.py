@@ -209,11 +209,11 @@ def query_shows(query):
         try:
             year = int(pattern)
         except ValueError:
-            return None
+            return list()
         return db.session.query(Show). \
             filter(Show.premiered.like('%%%d%%' % (year))).all()
 
-    return None
+    return list()
 
 
 @app.route('/', methods=['GET', 'POST'])
