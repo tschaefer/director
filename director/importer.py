@@ -5,8 +5,8 @@ from datetime import datetime
 import os
 import fnmatch
 from sqlalchemy.exc import IntegrityError
-from models import Show, Episode, Actor
-from db import Database
+from director.models import Show, Episode, Actor
+from director.db import Database
 
 
 class Utils(object):

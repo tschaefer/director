@@ -3,9 +3,10 @@
 import os
 import werkzeug
 import flask
+from copy import copy
 from flask import Flask, Blueprint
 from flask.ext.sqlalchemy import SQLAlchemy
-from models import Show, Episode
+from director.models import Show, Episode
 
 
 app = Flask(__name__)
@@ -26,11 +27,11 @@ def media_url(path):
 
 
 def obj_to_dict(obj, json=False):
-    pickle = obj.__dict__
-    pickle.pop('_sa_instance_state')
-    'base' in pickle and pickle.pop('base')
-    'nfo' in pickle and pickle.pop('nfo')
-    'nfo' in pickle and pickle.pop('nfo_mtime')
+    pickle = copy(obj)
+    pickle = pickle.__dict__
+    for key in ['_sa_instance_state', 'base', 'nfo', 'nfo_mtime']:
+        if key in pickle:
+            pickle.pop(key)
 
     if isinstance(obj, Show):
         fanart = pickle['fanart']
@@ -180,13 +181,32 @@ def get_show(show_id):
     return flask.render_template('show.html', show=show)
 
 
+def query_shows(query):
+    query = query.strip()
+    if query.find('%') != -1:
+        column, pattern = query.split('%', 1)
+        column = column.strip()
+        pattern = pattern.strip()
+    else:
+        return db.session.query(Show). \
+            filter(Show.title.like('%%%s%%' % (query))).all()
+
+    if column.lower() == 'title':
+        return db.session.query(Show). \
+            filter(Show.title.like('%%%s%%' % (pattern))).all()
+    elif column.lower() == 'genre':
+        return db.session.query(Show). \
+            filter(Show.genre.like("%%%s%%" % (pattern))).all()
+
+    return None
+
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/shows/', methods=['GET', 'POST'])
 def get_shows():
     if flask.request.method == 'POST':
         query = unicode(flask.request.form['query'])
-        _shows = db.session.query(Show). \
-            filter(Show.title.like("%%%s%%" % (query))).all()
+        _shows = query_shows(query)
     else:
         _shows = db.session.query(Show).all()
 

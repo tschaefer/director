@@ -3,9 +3,9 @@
 import sys
 import os
 import argparse
-from importer import Importer
-from updater import Updater
-from service import Service
+from director.importer import Importer
+from director.updater import Updater
+from director.service import Service
 
 
 def stype(bytestring):
