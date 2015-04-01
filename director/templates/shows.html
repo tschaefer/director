@@ -13,6 +13,17 @@
 
 {% block content %}
   <div class="row">
+  {% if shows|length == 0 %}
+    <div class="col-lg-offset-4 col-lg-4 col-md-offset-3 col-md-6 col-sm-offset-2 col-sm-8 col-xs-12">
+      <div class="thumbnail thumbnail-relative">
+        <img
+        src="//upload.wikimedia.org/wikipedia/commons/3/3d/FuBK-Testbild.png" class="img-responsive" alt="No TV shows today!">
+        <div class="caption caption-overlay">
+          <strong>No TV shows today!</strong>
+        </div>
+      </div>
+    </div>
+  {% endif %}
   {% for show in shows %}
     <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
       <div class="thumbnail thumbnail-relative">
@@ -22,6 +33,7 @@
         <div class="caption caption-overlay">
           <strong>{{ show.title }}</strong></br>
           <span class="text-muted">{{ show.studio|default('', true) }}</span>
+          <span class="text-muted pull-right">{{ show.genre|default('', true) }}</span>
         </div>
       </div>
     </div>
