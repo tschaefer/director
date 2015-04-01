@@ -211,7 +211,7 @@ def query_shows(query):
         except ValueError:
             return list()
         return db.session.query(Show). \
-            filter(Show.premiered.like('%%%d%%' % (year))).all()
+            filter(Show.premiered.like('%d-%%' % (year))).all()
 
     return list()
 
