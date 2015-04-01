@@ -6,7 +6,7 @@ import flask
 from copy import copy
 from flask import Flask, Blueprint
 from flask.ext.sqlalchemy import SQLAlchemy
-from director.models import Show, Episode
+from director.models import Show, Episode, Actor
 
 
 app = Flask(__name__)
@@ -196,7 +196,22 @@ def query_shows(query):
             filter(Show.title.like('%%%s%%' % (pattern))).all()
     elif column.lower() == 'genre':
         return db.session.query(Show). \
-            filter(Show.genre.like("%%%s%%" % (pattern))).all()
+            filter(Show.genre.like('%%%s%%' % (pattern))).all()
+    elif column.lower() == 'actor':
+        show_pks = db.session.query(Actor.show_pk). \
+            filter(Actor.name.like('%%%s%%' % (pattern))).all()
+        shows = list()
+        for pk in show_pks:
+            show = db.session.query(Show).get(pk)
+            shows.append(show)
+        return shows
+    elif column.lower() == 'year':
+        try:
+            year = int(pattern)
+        except ValueError:
+            return None
+        return db.session.query(Show). \
+            filter(Show.premiered.like('%%%d%%' % (year))).all()
 
     return None
 
