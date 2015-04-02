@@ -183,8 +183,8 @@ def get_show(show_id):
 
 def query_shows(query):
     query = query.strip()
-    if query.find('%') != -1:
-        column, pattern = query.split('%', 1)
+    if query.find(':') != -1:
+        column, pattern = query.split(':', 1)
         column = column.strip()
         pattern = pattern.strip()
     else:
@@ -197,6 +197,9 @@ def query_shows(query):
     elif column.lower() == 'genre':
         return db.session.query(Show). \
             filter(Show.genre.like('%%%s%%' % (pattern))).all()
+    elif column.lower() == 'studio':
+        return db.session.query(Show). \
+            filter(Show.studio.like('%%%s%%' % (pattern))).all()
     elif column.lower() == 'actor':
         show_pks = db.session.query(Actor.show_pk). \
             filter(Actor.name.like('%%%s%%' % (pattern))).all()
