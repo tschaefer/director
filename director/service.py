@@ -68,6 +68,11 @@ def date_filter(date, dateformat='%Y-%m-%d'):
     return date.strftime(dateformat)
 
 
+@app.template_filter('startswith')
+def startswith_filter(string, pattern):
+    return string.startswith(pattern)
+
+
 @app.errorhandler(405)
 @app.errorhandler(404)
 def page_not_found(e):
