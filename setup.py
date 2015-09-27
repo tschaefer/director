@@ -17,5 +17,6 @@ setup (
         url='https://github.com/tschaefer/director',
         description="Director. Entertainment directed by you.",
         license='BSD',
-        include_package_data=True
+        include_package_data=True,
+        zip_safe=False
 )
