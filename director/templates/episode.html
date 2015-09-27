@@ -19,7 +19,11 @@
   <div class="row">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
       <div class="thumbnail thumbnail-relative">
+      {% if episode.thumb.startswith("http") %}
+        <img src="{{ episode.thumb }}" class="img-responsive" alt="{{ episode.title }}">
+      {% else %}
         <img src="{{ episode.thumb|urlencode }}" class="img-responsive" alt="{{ episode.title }}">
+      {% endif %}
         <div class="caption caption-overlay">
           <strong>{{ episode.title }}</strong><br>
           <small class="text-muted">{{ episode.show }}</small>
