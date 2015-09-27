@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
-
 from setuptools import setup
 
-setup (
+setup(
         name='director',
         version='0.0.1',
         packages=['director'],
