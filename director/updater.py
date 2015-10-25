@@ -116,7 +116,11 @@ class Updater(Utils):
         if os.path.exists(thumb):
             episode.update(thumb=thumb)
         else:
-            episode.update(thumb=root.find('thumb').text)
+            thumb = old.nfo.replace('.nfo', '-thumb.jpg')
+            if os.path.exists(thumb):
+                episode.thumb = thumb
+            else:
+                episode.update(thumb=root.find('thumb').text)
         poster = "season%02d.tbn" % (int(old.season))
         poster = os.path.join(show.base, poster)
         if os.path.exists(poster):

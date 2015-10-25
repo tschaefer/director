@@ -134,11 +134,16 @@ class Importer(Utils):
             episode.aired = datetime. \
                 strptime(aired, '%Y-%m-%d').date()
         episode.plot = root.find('plot').text
+        episode.thumb = None
         thumb = nfo.replace('.nfo', '.tbn')
         if os.path.exists(thumb):
             episode.thumb = thumb
-        else:
-            episode.thumb = root.find('thumb').text
+        if episode.thumb is None:
+            thumb = nfo.replace('.nfo', '-thumb.jpg')
+            if os.path.exists(thumb):
+                episode.thumb = thumb
+            else:
+                episode.thumb = root.find('thumb').text
         poster = "season%02d.tbn" % (int(episode.season))
         poster = os.path.join(show.base, poster)
         if os.path.exists(poster):
