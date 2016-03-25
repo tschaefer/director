@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block style %}
-  <link rel="stylesheet" href="//cdn.plyr.io/1.5.20/plyr.css">
+  <link rel="stylesheet" href="//cdn.plyr.io/1.3.7/plyr.css">
 {% endblock %}
 
 {% block content %}
@@ -48,7 +48,7 @@
     <div class="col-lg-offset-1 col-lg-7 col-md-offset-1 col-md-6 col-sm-offset-1 col-sm-5 col-xs-12">
       <div class="panel panel-default">
         <div class="panel-body">
-          <div class="js-media-player">
+          <div class="player">
             <video poster="{{ episode.poster|urlencode }}" controls preload="metadata">
               <source src="{{ episode.video }}" type="video/mp4">
             </video>
@@ -64,15 +64,15 @@
     (function(d,p){
       var a=new XMLHttpRequest(),
           b=d.body;
-      a.open("GET",p,!0);
+      a.open("GET",p,true);
       a.send();
       a.onload=function(){
         var c=d.createElement("div");
-            c.style.display="none";
+            c.setAttribute('hidden', '');
             c.innerHTML=a.responseText;
             b.insertBefore(c,b.childNodes[0])}
-    })(document,"//cdn.plyr.io/1.5.20/sprite.svg");
+    })(document,"//cdn.plyr.io/1.3.7/sprite.svg");
   </script>
-  <script src="//cdn.plyr.io/1.5.20/plyr.js"></script>
-  <script src="//cdn.plyr.io/1.5.20/docs.js"></script>
+  <script src="//cdn.plyr.io/1.3.7/plyr.js"></script>
+  <script src="//cdn.plyr.io/1.3.7/docs.js"></script>
 {% endblock %}
