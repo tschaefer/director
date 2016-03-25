@@ -10,6 +10,7 @@ from director.models import Show, Episode, Actor
 
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
 
 
