@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block style %}
-  <link rel="stylesheet" href="//cdn.plyr.io/1.0.29/plyr.css">
+  <link rel="stylesheet" href="//cdn.plyr.io/1.5.20/plyr.css">
 {% endblock %}
 
 {% block content %}
@@ -48,7 +48,7 @@
     <div class="col-lg-offset-1 col-lg-7 col-md-offset-1 col-md-6 col-sm-offset-1 col-sm-5 col-xs-12">
       <div class="panel panel-default">
         <div class="panel-body">
-          <div class="player">
+          <div class="js-media-player">
             <video poster="{{ episode.poster|urlencode }}" controls preload="metadata">
               <source src="{{ episode.video }}" type="video/mp4">
             </video>
@@ -71,8 +71,8 @@
             c.style.display="none";
             c.innerHTML=a.responseText;
             b.insertBefore(c,b.childNodes[0])}
-    })(document,"//cdn.plyr.io/1.0.29/sprite.svg");
+    })(document,"//cdn.plyr.io/1.5.20/sprite.svg");
   </script>
-  <script src="//cdn.plyr.io/1.0.29/plyr.js"></script>
-  <script src="//cdn.plyr.io/1.0.29/docs.js"></script>
+  <script src="//cdn.plyr.io/1.5.20/plyr.js"></script>
+  <script src="//cdn.plyr.io/1.5.20/docs.js"></script>
 {% endblock %}
