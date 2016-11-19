@@ -3,9 +3,12 @@
 import os
 import werkzeug
 import flask
+import requests
 from copy import copy
+from urlparse import urlparse
+from urllib import quote
 from flask import Flask, Blueprint
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from director.models import Show, Episode, Actor
 
 
@@ -127,6 +130,24 @@ def get_episode_file(episode_id):
 
     return response
 
+@app.route('/episode/<int:episode_id>/tv')
+def play_episode_tv(episode_id):
+    episode = db.session.query(Episode).get(episode_id)
+    if not episode:
+        flask.abort(404)
+
+    _video_url = urlparse(flask.request.url)
+    video_url = 'https://%s%s' % (_video_url.netloc,
+            quote(media_url(episode.video)))
+
+    data = {
+        'action': 'start',
+        'data': video_url
+    }
+    req = requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
+            json=data)
+
+    return flask.redirect(flask.url_for('get_episode', episode_id=episode_id))
 
 @app.route('/episode/<int:episode_id>/')
 def get_episode(episode_id):

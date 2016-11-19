@@ -36,6 +36,10 @@
             <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
               <i class="fa fa-download"></i>
             </a>
+            /
+           <a href="{{ url_for('play_episode_tv', episode_id=episode.pk) }}">
+              <i class="fa fa-desktop"></i>
+           </a>
           </small>
         </div>
         <div class="panel-body">
