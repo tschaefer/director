@@ -5,8 +5,6 @@ import werkzeug
 import flask
 import requests
 from copy import copy
-from urlparse import urlparse
-from urllib import quote
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from director.models import Show, Episode, Actor
@@ -41,7 +39,7 @@ def obj_to_dict(obj, json=False):
         fanart = pickle['fanart']
         if fanart is None:
             if not json:
-                fanart = 'holder.js/1920x1080/gray/auto/text:%s' \
+                fanart = 'holder.js/1920x1080?theme=gray&auto=yes&text=%s' \
                     % (pickle['title'])
         else:
             fanart = media_url(fanart)
@@ -54,9 +52,9 @@ def obj_to_dict(obj, json=False):
         thumb = pickle['thumb']
         if thumb is None:
             if not json:
-                thumb = 'holder.js/400x225/gray/auto/text:%s' \
+                thumb = 'holder.js/400x225?theme=gray&auto=yes&text=%s' \
                     % (pickle['title'])
-        elif not thumb.startswith('http://'):
+        elif not thumb.startswith('http://') and not thumb.startswith('holder'):
             thumb = media_url(thumb)
         pickle.update(thumb=thumb)
         video = media_url(pickle['video'])
@@ -64,6 +62,10 @@ def obj_to_dict(obj, json=False):
 
     return pickle
 
+def redirect_url(url='get_shows'):
+    return flask.request.args.get('next') or \
+           flask.request.referrer or \
+           url_for(url)
 
 @app.template_filter('date')
 def date_filter(date, dateformat='%Y-%m-%d'):
@@ -130,24 +132,6 @@ def get_episode_file(episode_id):
 
     return response
 
-@app.route('/episode/<int:episode_id>/tv')
-def play_episode_tv(episode_id):
-    episode = db.session.query(Episode).get(episode_id)
-    if not episode:
-        flask.abort(404)
-
-    _video_url = urlparse(flask.request.url)
-    video_url = 'https://%s%s' % (_video_url.netloc,
-            quote(media_url(episode.video)))
-
-    data = {
-        'action': 'start',
-        'data': video_url
-    }
-    req = requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
-            json=data)
-
-    return flask.redirect(flask.url_for('get_episode', episode_id=episode_id))
 
 @app.route('/episode/<int:episode_id>/')
 def get_episode(episode_id):
@@ -201,6 +185,7 @@ def get_show(show_id):
         episode = obj_to_dict(_episode, json=request_json())
         episodes.append(episode)
     show.update(episodes=episodes)
+    show.update(seasons=episode['season'])
 
     if request_json():
         return flask.jsonify(show=show)

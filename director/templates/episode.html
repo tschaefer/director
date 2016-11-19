@@ -19,14 +19,14 @@
   <div class="row">
     <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
       <div class="thumbnail thumbnail-relative">
-      {% if episode.thumb.startswith("http") %}
         <img src="{{ episode.thumb }}" class="img-responsive" alt="{{ episode.title }}">
-      {% else %}
-        <img src="{{ episode.thumb|urlencode }}" class="img-responsive" alt="{{ episode.title }}">
-      {% endif %}
         <div class="caption caption-overlay">
           <strong>{{ episode.title }}</strong><br>
-          <small class="text-muted">{{ episode.show }}</small>
+          <small class="text-muted">
+            <a href="{{ url_for('get_show', show_id=episode.show_pk) }}">
+              {{ episode.show }}
+            </a>
+          </small>
         </div>
       </div>
       <div class="panel panel-default">
@@ -36,10 +36,6 @@
             <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
               <i class="fa fa-download"></i>
             </a>
-            /
-           <a href="{{ url_for('play_episode_tv', episode_id=episode.pk) }}">
-              <i class="fa fa-desktop"></i>
-           </a>
           </small>
         </div>
         <div class="panel-body">
@@ -49,12 +45,12 @@
         </div>
       </div>
     </div>
-    <div class="col-lg-offset-1 col-lg-7 col-md-offset-1 col-md-6 col-sm-offset-1 col-sm-5 col-xs-12">
+    <div class="col-lg-offset-1 col-lg-7 col-md-offset-1 col-md-6 col-sm-offset-1 col-sm-5 col-xs-12 hidden-xs">
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="plyr">
             <video poster="{{ episode.poster|urlencode }}" controls preload="metadata">
-              <source src="{{ episode.video }}" type="video/mp4">
+              <source src="{{ episode.video|urlencode }}" type="video/mp4">
             </video>
           </div>
         </div>

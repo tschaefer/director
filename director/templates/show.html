@@ -15,7 +15,7 @@
   <div class="row">
     <div class="col-lg-4 col-md-6 col-sm-8 col-xs-12">
       <div class="thumbnail thumbnail-relative">
-        <img src="{{ show.fanart|urlencode }}" class="img-responsive" alt="{{ show.title }}">
+        <img src="{{ show.fanart }}" class="img-responsive" alt="{{ show.title }}">
         <div class="caption caption-overlay">
           <strong>{{ show.title }}</strong><br>
           <span class="text-muted">{{ show.studio }}</span>
@@ -54,40 +54,65 @@
       </div>
     </div>
     <div class="col-lg-8 col-md-6 col-sm-4 col-xs-12">
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th><i class="fa fa-download"></i></th>
-            <th>Title</th>
-            <th class="hidden-xs hidden-sm">Plot</th>
-            <th>Aired</th>
-          </tr>
-        </thead>
-        <tbody>
-        {% for episode in show.episodes %}
-          <tr>
-            <td>{{ episode.season }}/{{ episode.episode }}</td>
-            <td>
-              <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
-                {{ episode.video_type }}
-              </a>
-            </td>
-            <td>
-              <a href="{{ url_for('get_episode', episode_id=episode.pk) }}">
-                {{ episode.title|truncate(32) }}
-              </a>
-            </td>
-          {% if episode.plot %}
-            <td class="hidden-xs hidden-sm">{{ episode.plot|truncate(64) }}</td>
-          {% else %}
-            <td class="hidden-xs hidden-sm"></td>
+      <ul class="nav nav-pills" role="tablist">
+      {% for season in range(show.seasons) %}
+        {% if loop.first %}
+        <li role="presentation" class="active">
+        {% else %}
+        <li role="presentation">
+        {% endif %}
+          <a href="#season{{ season + 1}}"
+             aria-controls="season{{ season + 1 }}" role="tab"
+             data-toggle="tab">Season {{ season +1 }}</a>
+        </li>
+      {% endfor %}
+      </ul>
+      <div class="tab-content">
+      {% for season in range(show.seasons) %}
+        {% if loop.first %}
+        <div role="tabpanel" class="tab-pane active" id="season{{ season + 1}}">
+        {% else %}
+        <div role="tabpanel" class="tab-pane" id="season{{ season + 1}}">
+        {% endif %}
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th><i class="fa fa-download"></i></th>
+              <th>Title</th>
+              <th class="hidden-xs hidden-sm">Plot</th>
+              <th>Aired</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for episode in show.episodes %}
+            {% if episode.season == season + 1 %}
+            <tr>
+                <td>{{ episode.season }}/{{ episode.episode }}</td>
+              <td>
+                <a href="{{ episode.video|urlencode }}">
+                  {{ episode.video_type }}
+                </a>
+              </td>
+              <td>
+                <a href="{{ url_for('get_episode', episode_id=episode.pk) }}">
+                  {{ episode.title|truncate(32) }}
+                </a>
+              </td>
+            {% if episode.plot %}
+              <td class="hidden-xs hidden-sm">{{ episode.plot|truncate(64) }}</td>
+            {% else %}
+              <td class="hidden-xs hidden-sm"></td>
+            {% endif %}
+              <td>{{ episode.aired|date }}</td>
+            </tr>
           {% endif %}
-            <td>{{ episode.aired|date }}</td>
-          </tr>
-        {% endfor %}
-        </tbody>
-      </table>
+          {% endfor %}
+          </tbody>
+        </table>
+        </div>
+      {% endfor %}
+      </div>
     </div>
   </div>
 {% endblock %}
