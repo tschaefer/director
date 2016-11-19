@@ -64,6 +64,10 @@ def obj_to_dict(obj, json=False):
 
     return pickle
 
+def redirect_url(url='get_shows'):
+    return flask.request.args.get('next') or \
+           flask.request.referrer or \
+           url_for(url)
 
 @app.template_filter('date')
 def date_filter(date, dateformat='%Y-%m-%d'):
@@ -91,6 +95,35 @@ def page_not_found(e):
             return flask.jsonify(error=error), 405
         return flask.render_template('http_error.html', error=405), 405
 
+@app.route('/tv/play')
+def tv_play():
+    data = {
+        'action': 'play',
+    }
+    requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
+            json=data)
+
+    return flask.redirect(redirect_url())
+
+@app.route('/tv/pause')
+def tv_pause():
+    data = {
+        'action': 'pause',
+    }
+    requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
+            json=data)
+
+    return flask.redirect(redirect_url())
+
+@app.route('/tv/stop')
+def tv_stop():
+    data = {
+        'action': 'stop',
+    }
+    requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
+            json=data)
+
+    return flask.redirect(redirect_url())
 
 @app.route('/episodes/', methods=['GET', 'POST'])
 def get_episodes():
@@ -144,7 +177,7 @@ def play_episode_tv(episode_id):
         'action': 'start',
         'data': video_url
     }
-    req = requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
+    requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
             json=data)
 
     return flask.redirect(flask.url_for('get_episode', episode_id=episode_id))
