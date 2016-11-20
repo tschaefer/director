@@ -22,7 +22,11 @@
         <img src="{{ episode.thumb }}" class="img-responsive" alt="{{ episode.title }}">
         <div class="caption caption-overlay">
           <strong>{{ episode.title }}</strong><br>
-          <small class="text-muted">{{ episode.show }}</small>
+          <small class="text-muted">
+            <a href="{{ url_for('get_show', show_id=episode.show_pk) }}">
+              {{ episode.show }}
+            </a>
+          </small>
         </div>
       </div>
       <div class="panel panel-default">
