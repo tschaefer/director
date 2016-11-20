@@ -41,7 +41,7 @@ def obj_to_dict(obj, json=False):
         fanart = pickle['fanart']
         if fanart is None:
             if not json:
-                fanart = 'holder.js/1920x1080/gray/auto/text:%s' \
+                fanart = 'holder.js/1920x1080?theme=gray&auto=yes&text=%s' \
                     % (pickle['title'])
         else:
             fanart = media_url(fanart)
@@ -54,9 +54,9 @@ def obj_to_dict(obj, json=False):
         thumb = pickle['thumb']
         if thumb is None:
             if not json:
-                thumb = 'holder.js/400x225/gray/auto/text:%s' \
+                thumb = 'holder.js/400x225?theme=gray&auto=yes&text=%s' \
                     % (pickle['title'])
-        elif not thumb.startswith('http://'):
+        elif not thumb.startswith('http://') and not thumb.startswith('holder'):
             thumb = media_url(thumb)
         pickle.update(thumb=thumb)
         video = media_url(pickle['video'])
