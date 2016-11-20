@@ -19,6 +19,7 @@
   <style type="text/css">
     body {
       padding-top: 70px;
+      padding-bottom: 50px;
       font-family: 'Ubuntu', sans-serif;
     }
     .dl-starring {
@@ -66,16 +67,6 @@
           <li>
             <a href={{ url_for('.get_episodes') }}>Episodes</a>
           </li>
-          <li class="navbar-text">
-            TV Control
-          </li>
-          <li>
-            <div class="btn-group navbar-btn" role="group">
-              <a href="{{ url_for('tv_play') }}" type="button" class="btn btn-default"><i class="fa fa-play"></i></a>
-              <a href="{{ url_for('tv_pause') }}" type="button" class="btn btn-default"><i class="fa fa-pause"></i></a>
-              <a href="{{ url_for('tv_stop') }}" type="button" class="btn btn-default"><i class="fa fa-stop"></i></a>
-            </div>
-          </li>
         </ul>
         {% block navbar_form %}{% endblock %}
       </div>
@@ -85,6 +76,21 @@
   <div class="container-fluid">
     {% block content %}{% endblock %}
   </div>
+
+  <footer class="navbar navbar-default navbar-fixed-bottom">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <p class="navbar-text hidden-xs">TV Control</p>
+          <div class="btn-group navbar-btn" role="group">
+            <a href="{{ url_for('tv_play') }}" type="button" class="btn btn-default"><i class="fa fa-play"></i></a>
+            <a href="{{ url_for('tv_pause') }}" type="button" class="btn btn-default"><i class="fa fa-pause"></i></a>
+            <a href="{{ url_for('tv_stop') }}" type="button" class="btn btn-default"><i class="fa fa-stop"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <script src="//code.jquery.com/jquery-1.12.2.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
