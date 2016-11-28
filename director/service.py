@@ -174,8 +174,9 @@ def play_episode_tv(episode_id):
             quote(media_url(episode.video)))
 
     data = {
-        'action': 'start',
-        'data': video_url
+        'action':  'start',
+        'options': 'local',
+        'data':     video_url
     }
     requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
             json=data)
