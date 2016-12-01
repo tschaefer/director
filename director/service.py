@@ -181,7 +181,7 @@ def play_episode_tv(episode_id):
     requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
             json=data)
 
-    return flask.redirect(flask.url_for('get_episode', episode_id=episode_id))
+    return flask.redirect(redirect_url())
 
 @app.route('/episode/<int:episode_id>/')
 def get_episode(episode_id):

@@ -59,6 +59,7 @@
           <tr>
             <th>#</th>
             <th><i class="fa fa-download"></i></th>
+            <th><i class="fa fa-desktop"></i></th>
             <th>Title</th>
             <th class="hidden-xs hidden-sm">Plot</th>
             <th>Aired</th>
@@ -71,6 +72,11 @@
             <td>
               <a href="{{ url_for('get_episode_file', episode_id=episode.pk) }}">
                 {{ episode.video_type }}
+              </a>
+            </td>
+            <td>
+              <a href="{{ url_for('play_episode_tv', episode_id=episode.pk)}}">
+                TV
               </a>
             </td>
             <td>
