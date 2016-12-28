@@ -21,7 +21,7 @@ class TV(object):
         return {
             'action':  action,
             'data':    data,
-            'options': 'live'
+            'options': 'local'
         }
 
     def start(self, chan, stream):
