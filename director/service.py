@@ -10,11 +10,13 @@ from urllib import quote
 from flask import Flask, Blueprint
 from flask_sqlalchemy import SQLAlchemy
 from director.models import Show, Episode, Actor
+from director.tv import TV
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
+tv = TV('http://chelsea.local:8090/tv/api/v1.0/')
 
 
 def request_json():
@@ -97,33 +99,28 @@ def page_not_found(e):
 
 @app.route('/tv/play')
 def tv_play():
-    data = {
-        'action': 'play',
-    }
-    requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
-            json=data)
-
+    tv.play()
     return flask.redirect(redirect_url())
 
 @app.route('/tv/pause')
 def tv_pause():
-    data = {
-        'action': 'pause',
-    }
-    requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
-            json=data)
-
+    tv.pause()
     return flask.redirect(redirect_url())
 
 @app.route('/tv/stop')
 def tv_stop():
-    data = {
-        'action': 'stop',
-    }
-    requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
-            json=data)
-
+    tv.stop()
     return flask.redirect(redirect_url())
+
+@app.route('/tv/vol/up')
+def tv_vol_up():
+    tv.vol('up')
+    return flask.redirect(flask.request.referrer)
+
+@app.route('/tv/vol/down')
+def tv_vol_down():
+    tv.vol('down')
+    return flask.redirect(flask.request.referrer)
 
 @app.route('/episodes/', methods=['GET', 'POST'])
 def get_episodes():
@@ -173,13 +170,7 @@ def play_episode_tv(episode_id):
     video_url = 'https://%s%s' % (_video_url.netloc,
             quote(media_url(episode.video)))
 
-    data = {
-        'action':  'start',
-        'options': 'local',
-        'data':     video_url
-    }
-    requests.post('http://chelsea.local:8090/tv/api/v1.0/playback',
-            json=data)
+    tv.start('Director', video_url)
 
     return flask.redirect(redirect_url())
 
