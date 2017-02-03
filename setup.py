@@ -7,7 +7,7 @@ setup(
         version='0.0.1',
         packages=['director'],
         install_requires=['Flask >= 0.10.1', 'Flask-SQLAlchemy >= 2.0',
-                          'SQLAlchemy >= 0.9.9', 'requests => 2.12.1'],
+                          'SQLAlchemy >= 0.9.9', 'requests >= 2.12.1'],
         entry_points={'console_scripts': ['director=director:main']},
         author='Tobias Schäfer',
         author_email='director@blackoxorg',
