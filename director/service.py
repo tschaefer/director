@@ -16,7 +16,7 @@ from director.tv import TV
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
-tv = TV('http://chelsea.local:8090/tv/api/v1.0/')
+tv = TV('http://tv.u.mesh.io:8090/tv/api/v1.0/')
 
 
 def request_json():
@@ -226,6 +226,7 @@ def get_show(show_id):
         episode = obj_to_dict(_episode, json=request_json())
         episodes.append(episode)
     show.update(episodes=episodes)
+    show.update(seasons=episode['season'])
 
     if request_json():
         return flask.jsonify(show=show)
