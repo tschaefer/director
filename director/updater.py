@@ -90,6 +90,8 @@ class Updater(Utils):
         shows = self.db.session.query(Show).all()
 
         for show in shows:
+            if not os.path.exists(show.nfo):
+                continue
             mtime = int(os.stat(show.nfo).st_mtime)
             if mtime != int(show.nfo_mtime) or not show.fanart:
                 root = self.parse_nfo(show.nfo)
@@ -133,6 +135,8 @@ class Updater(Utils):
                 filter(Episode.show_pk == show.pk).all()
 
             for episode in episodes:
+                if not os.path.exists(episode.nfo):
+                    continue
                 mtime = int(os.stat(episode.nfo).st_mtime)
                 if mtime != int(episode.nfo_mtime) or not episode.thumb \
                         or not episode.poster:
