@@ -8,18 +8,13 @@ from director.updater import Updater
 from director.service import Service
 
 
-def stype(bytestring):
-    unicode_string = bytestring.decode(sys.getfilesystemencoding())
-    return unicode_string
-
-
 def parse_options():
     db = os.path.join(os.path.expanduser('~'), 'director.db')
     db = 'sqlite:///%s' % db
 
     parser = argparse.ArgumentParser(description='Director')
     parser.add_argument('-d', '--database',
-                        type=unicode,
+                        type=str,
                         default=db,
                         help='database url')
     subparsers = parser.add_subparsers()
@@ -27,7 +22,7 @@ def parse_options():
     parser_import = subparsers.add_parser('import')
     parser_import.set_defaults(importer=True)
     parser_import.add_argument('path',
-                               type=stype,
+                               type=str,
                                help='media path')
     parser_import.add_argument('-v', '--verbose',
                                action='store_true',
@@ -36,7 +31,7 @@ def parse_options():
     parser_update = subparsers.add_parser('update')
     parser_update.set_defaults(updater=True)
     parser_update.add_argument('path',
-                               type=stype,
+                               type=str,
                                help='media path')
     parser_update.add_argument('-v', '--verbose',
                                action='store_true',
@@ -45,10 +40,10 @@ def parse_options():
     parser_service = subparsers.add_parser('service')
     parser_service.set_defaults(service=True)
     parser_service.add_argument('path',
-                                type=stype,
+                                type=str,
                                 help='media path')
     parser_service.add_argument('-H', '--host',
-                                type=unicode,
+                                type=str,
                                 default='localhost',
                                 help='bind to address')
     parser_service.add_argument('-p', '--port',

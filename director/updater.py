@@ -25,11 +25,11 @@ class Utils(object):
             et = ElementTree.parse(nfo)
         except ElementTree.ParseError as e:
             if self.verbose:
-                print "(%s) %s" % (nfo, e)
+                print("(%s) %s" % (nfo, e))
             return None
         except IOError as e:
             if self.verbose:
-                print "%s" % (e)
+                print("%s" % (e))
             return None
         return et.getroot()
 
@@ -49,7 +49,7 @@ class Utils(object):
             self.db.session.commit()
         except IntegrityError as e:
             if self.verbose:
-                print "%s" % (e)
+                print("%s" % (e))
             self.db.session.rollback()
             return False
         else:
@@ -99,8 +99,7 @@ class Updater(Utils):
                     continue
                 elif root.tag != 'tvshow':
                     if self.verbose:
-                        print "(%s) invalid root tag '%s'" % (show.nfo,
-                                                              root.tag)
+                        print("(%s) invalid root tag '%s'" % (show.nfo, root.tag))
                     continue
                 self.show(root, show)
             else:
@@ -151,8 +150,8 @@ class Updater(Utils):
                             branches.append(branch)
                     else:
                         if self.verbose:
-                            print "(%s) invalid root tag '%s'" % (episode.nfo,
-                                                                  root.tag)
+                            print("(%s) invalid root tag '%s'" % (episode.nfo,
+                                                                  root.tag))
                         continue
                 else:
                     continue

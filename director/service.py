@@ -97,7 +97,7 @@ def page_not_found(e):
 @app.route('/episodes/', methods=['GET', 'POST'])
 def get_episodes():
     if flask.request.method == 'POST':
-        query = unicode(flask.request.form['query'])
+        query = flask.request.form['query']
         _episodes = db.session.query(Episode). \
             filter(Episode.title.like("%%%s%%" % (query)))
     else:
@@ -167,7 +167,7 @@ def get_show(show_id):
 
     _episodes = db.session.query(Episode).filter_by(show_pk=_show.pk)
     if flask.request.method == 'POST':
-        query = unicode(flask.request.form['query'])
+        query = flask.request.form['query']
         _episodes = _episodes.filter(Episode.title.like('%%%s%%' % (query)))
     _episodes = _episodes.order_by(Episode.season).order_by(Episode.episode) \
         .all()
@@ -235,7 +235,7 @@ def query_shows(query):
 @app.route('/shows/', methods=['GET', 'POST'])
 def get_shows():
     if flask.request.method == 'POST':
-        query = unicode(flask.request.form['query'])
+        query = flask.request.form['query']
         _shows = query_shows(query)
     else:
         _shows = db.session.query(Show).all()

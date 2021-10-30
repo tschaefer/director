@@ -25,11 +25,11 @@ class Utils(object):
             et = ElementTree.parse(nfo)
         except ElementTree.ParseError as e:
             if self.verbose:
-                print "(%s) %s" % (nfo, e)
+                print("(%s) %s" % (nfo, e))
             return None
         except IOError as e:
             if self.verbose:
-                print "%s" % (e)
+                print("%s" % (e))
             return None
         else:
             return et.getroot()
@@ -47,7 +47,7 @@ class Utils(object):
             self.db.session.commit()
         except IntegrityError as e:
             if self.verbose:
-                print "%s" % (e)
+                print("%s" % (e))
             self.db.session.rollback()
             return False
         else:
@@ -62,7 +62,7 @@ class Utils(object):
             if os.path.exists(video):
                 return (video, ext.lstrip('.'))
         if self.verbose:
-            print "No video found for '%s'" % (nfo)
+            print("No video found for '%s'" % (nfo))
         return (None, None)
 
 
@@ -101,7 +101,7 @@ class Importer(Utils):
         nfos = self.find_nfos(self.path, 'tvshow.nfo')
         if len(nfos) == 0:
             if self.verbose:
-                print "(%s) no shows found" % (self.path)
+                print("(%s) no shows found" % (self.path))
             return
 
         _nfos = self.db.session.query(Show.nfo).all()
@@ -115,7 +115,7 @@ class Importer(Utils):
                 continue
             elif root.tag != 'tvshow':
                 if self.verbose:
-                    print "(%s) invalid root tag '%s'" % (nfo, root.tag)
+                    print("(%s) invalid root tag '%s'" % (nfo, root.tag))
                 continue
             else:
                 self.show(nfo, root)
@@ -178,7 +178,7 @@ class Importer(Utils):
                         branches.append(_root)
                 else:
                     if self.verbose:
-                        print "(%s) invalid root tag '%s'" % (nfo, root.tag)
+                        print("(%s) invalid root tag '%s'" % (nfo, root.tag))
                     continue
 
                 for root in branches:
